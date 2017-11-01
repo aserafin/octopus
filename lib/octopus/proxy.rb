@@ -76,10 +76,14 @@ module Octopus
     end
 
     def select_connection
-      Rollbar.scope!(octopus_in_select_connection: {
+      Thread.current['octopus.adrian.counter'] ||= 0
+
+      Rollbar.scope!(octopus_in_select_connection: { Thread.current['octopus.adrian.counter'] => {
         shard_name: shard_name,
         shards: shards
-      })
+      }})
+      Thread.current['octopus.adrian.counter'] += 1
+      
       safe_connection(shards[shard_name])
     end
 
