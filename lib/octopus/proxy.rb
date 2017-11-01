@@ -76,6 +76,10 @@ module Octopus
     end
 
     def select_connection
+      Rollbar.scope!(octopus_in_select_connection: {
+        shard_name: shard_name,
+        shards: shards
+      })
       safe_connection(shards[shard_name])
     end
 
